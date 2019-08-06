@@ -84,7 +84,7 @@ An object of class \code{c("choose_b", "exdex")} containing
 Creates data for a plot to aid the choice of the block length \code{b} to
 supply to \code{\link{spm}}.  The general idea is to select the smallest
 value of \code{b} above which estimates of the extremal index \eqn{\theta}
-appear to be constant eith respect to \code{b}, taking into account sampling
+appear to be constant with respect to \code{b}, taking into account sampling
 variability.  \code{\link{plot.choose_b}} creates the plot.
 }
 \details{
@@ -130,7 +130,7 @@ plot(res500, estimator = "BB2018", ylim = c(0, 1))
 \references{
 Coles, S. G. (2001) \emph{An Introduction to Statistical
   Modeling of Extreme Values}, Springer-Verlag, London.
-  \url{http://dx.doi.org/10.1007/978-1-4471-3675-0_3}
+  \url{https://doi.org/10.1007/978-1-4471-3675-0_3}
 
 Northrop, P. J. (2015) An efficient semiparametric maxima
 estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.

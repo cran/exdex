@@ -1,8 +1,8 @@
 Package: exdex
 Type: Package
 Title: Estimation of the Extremal Index
-Version: 1.0.0
-Date: 2019-08-02
+Version: 1.0.1
+Date: 2019-08-06
 Authors@R: c(
     person(c("Paul", "J."), "Northrop", email = "p.northrop@ucl.ac.uk", 
       role = c("aut", "cre", "cph")),
@@ -32,9 +32,9 @@ URL: http://github.com/paulnorthrop/exdex
 BugReports: http://github.com/paulnorthrop/exdex/issues
 LinkingTo: Rcpp, RcppArmadillo
 NeedsCompilation: yes
-Packaged: 2019-08-02 12:46:15 UTC; paul
+Packaged: 2019-08-06 12:55:50 UTC; paul
 Author: Paul J. Northrop [aut, cre, cph],
   Constantinos Christodoulides [aut, cph]
 Maintainer: Paul J. Northrop <p.northrop@ucl.ac.uk>
 Repository: CRAN
-Date/Publication: 2019-08-03 06:40:03 UTC
+Date/Publication: 2019-08-06 14:20:02 UTC
