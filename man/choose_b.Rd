@@ -4,10 +4,17 @@
 \alias{choose_b}
 \title{Block length diagnostic for the semiparametric maxima estimator}
 \usage{
-choose_b(data, b, bias_adjust = c("BB3", "BB1", "N", "none"),
-  constrain = TRUE, varN = TRUE, level = 0.95,
-  interval_type = c("norm", "lik"), conf_scale = c("theta", "log"),
-  type = c("vertical", "cholesky", "spectral", "none"))
+choose_b(
+  data,
+  b,
+  bias_adjust = c("BB3", "BB1", "N", "none"),
+  constrain = TRUE,
+  varN = TRUE,
+  level = 0.95,
+  interval_type = c("norm", "lik"),
+  conf_scale = c("theta", "log"),
+  type = c("vertical", "cholesky", "spectral", "none")
+)
 }
 \arguments{
 \item{data}{A numeric vector of raw data.  No missing values are allowed.}
@@ -130,15 +137,15 @@ plot(res500, estimator = "BB2018", ylim = c(0, 1))
 \references{
 Coles, S. G. (2001) \emph{An Introduction to Statistical
   Modeling of Extreme Values}, Springer-Verlag, London.
-  \url{https://doi.org/10.1007/978-1-4471-3675-0_3}
+  \doi{10.1007/978-1-4471-3675-0_3}
 
 Northrop, P. J. (2015) An efficient semiparametric maxima
-estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
-\url{https://doi.org/10.1007/s10687-015-0221-5}
+  estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
+  \doi{10.1007/s10687-015-0221-5}
 
 Berghaus, B., Bucher, A. (2018) Weak convergence of a pseudo
-maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
-\strong{46}(5), 2307-2335. \url{https://doi.org/10.1214/17-AOS1621}
+  maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
+  \strong{46}(5), 2307-2335. \doi{10.1214/17-AOS1621}
 }
 \seealso{
 \code{\link{plot.choose_b}} to produce the block length diagnostic

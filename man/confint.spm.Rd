@@ -4,11 +4,18 @@
 \alias{confint.spm}
 \title{Confidence intervals for the extremal index \eqn{\theta}}
 \usage{
-\method{confint}{spm}(object, parm = "theta", level = 0.95,
-  maxima = c("sliding", "disjoint"), interval_type = c("norm", "lik",
-  "both"), conf_scale = c("theta", "log"), constrain = TRUE,
-  bias_adjust = TRUE, type = c("vertical", "cholesky", "spectral",
-  "none"), ...)
+\method{confint}{spm}(
+  object,
+  parm = "theta",
+  level = 0.95,
+  maxima = c("sliding", "disjoint"),
+  interval_type = c("norm", "lik", "both"),
+  conf_scale = c("theta", "log"),
+  constrain = TRUE,
+  bias_adjust = TRUE,
+  type = c("vertical", "cholesky", "spectral", "none"),
+  ...
+)
 }
 \arguments{
 \item{object}{An object of class \code{c("spm", "exdex")}, returned by
@@ -110,6 +117,7 @@ A list of class c("confint_spm", "exdex") containing the
     \code{object$theta_sl} if \code{maxima = "sliding"},
     \code{object$theta_dj} if \code{maxima = "disjoint"},
     which provides a check that the results are correct.}
+  \item{level}{The input \code{level}.}
 }
 \description{
 \code{confint} method for objects of class \code{c("spm", "exdex")}.
@@ -159,11 +167,11 @@ plot(cis)
 \references{
 Northrop, P. J. (2015) An efficient semiparametric maxima
 estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
-\url{https://doi.org/10.1007/s10687-015-0221-5}
+  \doi{10.1007/s10687-015-0221-5}
 
 Berghaus, B., Bucher, A. (2018) Weak convergence of a pseudo
-maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
-\strong{46}(5), 2307-2335. \url{https://doi.org/10.1214/17-AOS1621}
+  maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
+  \strong{46}(5), 2307-2335. \doi{10.1214/17-AOS1621}
 }
 \seealso{
 \code{\link{plot.confint_spm}}: \code{plot} method for

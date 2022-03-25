@@ -4,10 +4,18 @@
 \alias{kgaps}
 \title{Maximum likelihood estimation for the \eqn{K}-gaps model}
 \usage{
-kgaps(data, u, k = 1, inc_cens = FALSE)
+kgaps(data, u, k = 1, inc_cens = TRUE)
 }
 \arguments{
-\item{data}{A numeric vector of raw data.  No missing values are allowed.}
+\item{data}{A numeric vector or numeric matrix of raw data.  If \code{data}
+  is a matrix then the log-likelihood is constructed as the sum of
+  (independent) contributions from different columns. A common situation is
+  where each column relates to a different year.
+
+  If \code{data} contains missing values then \code{\link{split_by_NAs}} is
+  used to divide the data further into sequences of non-missing values,
+  stored in different columns in a matrix.  Again, the log-likelihood
+  is constructed as a sum of contributions from different columns.}
 
 \item{u}{A numeric scalar.  Extreme value threshold applied to data.}
 
@@ -19,8 +27,8 @@ corresponding to an inter-exceedance time of \eqn{T} is given by
 \eqn{S = \max(T - K, 0)}{S = max(T - K, 0)}.}
 
 \item{inc_cens}{A logical scalar indicating whether or not to include
-contributions from censored inter-exceedance times relating to the
-first and last observation.  See Attalides (2015) for details.}
+contributions from censored inter-exceedance times, relating to the
+first and last observations.  See Attalides (2015) for details.}
 }
 \value{
 An object (a list) of class \code{c("kgaps", "exdex")} containing
@@ -31,6 +39,7 @@ An object (a list) of class \code{c("kgaps", "exdex")} containing
       \code{\link{kgaps_stat}}.}
     \item{\code{k, u, inc_cens} }{The input values of \code{k},
       \code{u} and \code{inc_cens}.}
+    \item{\code{max_loglik }}{The value of the log-likelihood at the MLE.}
     \item{\code{call }}{The call to \code{kgaps}.}
 }
 \description{
@@ -60,7 +69,13 @@ summary(theta)
 ### Newlyn sea surges
 
 u <- quantile(newlyn, probs = 0.60)
-theta <- kgaps(newlyn, u, k= 2)
+theta <- kgaps(newlyn, u, k = 2)
+theta
+summary(theta)
+
+### Cheeseboro wind gusts
+
+theta <- kgaps(cheeseboro, 45, k = 3)
 theta
 summary(theta)
 }
@@ -68,11 +83,11 @@ summary(theta)
 Suveges, M. and Davison, A. C. (2010) Model
   misspecification in peaks over threshold analysis, \emph{The Annals of
   Applied Statistics}, \strong{4}(1), 203-221.
-  \url{https://doi.org/10.1214/09-AOAS292}
+  \doi{10.1214/09-AOAS292}
 
 Attalides, N. (2015) Threshold-based extreme value modelling,
   PhD thesis, University College London.
-  \url{http://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
+  \url{https://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
 }
 \seealso{
 \code{\link{confint.kgaps}} to estimate confidence intervals

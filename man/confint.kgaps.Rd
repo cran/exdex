@@ -4,9 +4,15 @@
 \alias{confint.kgaps}
 \title{Confidence intervals for the extremal index \eqn{\theta}}
 \usage{
-\method{confint}{kgaps}(object, parm = "theta", level = 0.95,
-  interval_type = c("both", "norm", "lik"), conf_scale = c("theta",
-  "log"), constrain = TRUE, ...)
+\method{confint}{kgaps}(
+  object,
+  parm = "theta",
+  level = 0.95,
+  interval_type = c("both", "norm", "lik"),
+  conf_scale = c("theta", "log"),
+  constrain = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{An object of class \code{c("kgaps", "exdex")}, returned by
@@ -40,12 +46,17 @@ less than 0 are set to 0.}
 \item{...}{Further arguments. None are used currently.}
 }
 \value{
-A matrix with columns giving the lower and upper confidence limits.
-  These are labelled as (1 - level)/2 and 1 - (1 - level)/2 in \%
-  (by default 2.5\% and 97.5\%).
+A list of class c("confint_kgaps", "exdex") containing the
+  following components.
+  \item{cis}{A matrix with columns giving the lower and upper confidence
+  limits. These are labelled as (1 - level)/2 and 1 - (1 - level)/2 in
+  \% (by default 2.5\% and 97.5\%).
   The row names indicate the type of interval:
   \code{norm} for intervals based on large sample normality and \code{lik}
-  for likelihood-based intervals.
+  for likelihood-based intervals.}
+  \item{call}{The call to \code{spm}.}
+  \item{object}{The input object \code{object}.}
+  \item{level}{The input \code{level}.}
 }
 \description{
 \code{confint} method for objects of class \code{c("kgaps", "exdex")}.
@@ -66,11 +77,13 @@ Two type of interval are calculated: (a) an interval based on the
 \examples{
 u <- quantile(newlyn, probs = 0.90)
 theta <- kgaps(newlyn, u)
-confint(theta)
+cis <- confint(theta)
+cis
+plot(cis)
 }
 \references{
 Suveges, M. and Davison, A. C. (2010) Model
   misspecification in peaks over threshold analysis, \emph{The Annals of
   Applied Statistics}, \strong{4}(1), 203-221.
-  \url{https://doi.org/10.1214/09-AOAS292}
+  \doi{10.1214/09-AOAS292}
 }

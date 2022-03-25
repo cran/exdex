@@ -1,4 +1,4 @@
-context("confint.spm")
+#context("confint.spm")
 
 my_tol <- 1e-5
 
@@ -43,7 +43,7 @@ test_that("spm lik intervals don't depend on conf_scale", {
 
 # ============================= plot.confint.spm =============================
 
-context("plot.confint_spm")
+#context("plot.confint_spm")
 
 # Check that plot.confint_spm works
 
@@ -128,7 +128,7 @@ test_that("plot.confint_spm works, user plot args, disjoint", {
 
 # ================================== kgaps ===================================
 
-context("confint.kgaps")
+#context("confint.kgaps")
 
 u <- quantile(newlyn, probs = 0.90)
 
@@ -136,7 +136,7 @@ res <- kgaps(newlyn, u)
 res1 <- confint(res)
 res2 <- confint(res, conf_scale = "log")
 test_that("kgaps lik intervals don't depend on conf_scale", {
-  testthat::expect_identical(res1["lik", ], res2["lik", ])
+  testthat::expect_identical(res1$cis["lik", ], res2$cis["lik", ])
 })
 
 # Repeat for inc_cens = TRUE
@@ -145,6 +145,6 @@ res <- kgaps(newlyn, u, inc_cens = TRUE)
 res1 <- confint(res)
 res2 <- confint(res, conf_scale = "log")
 test_that("kgaps lik intervals don't depend on conf_scale", {
-  testthat::expect_identical(res1["lik", ], res2["lik", ])
+  testthat::expect_identical(res1$cis["lik", ], res2$cis["lik", ])
 })
 

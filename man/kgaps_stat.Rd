@@ -4,10 +4,10 @@
 \alias{kgaps_stat}
 \title{Sufficient statistics for the \eqn{K}-gaps model}
 \usage{
-kgaps_stat(data, u, k = 1, inc_cens = FALSE)
+kgaps_stat(data, u, k = 1, inc_cens = TRUE)
 }
 \arguments{
-\item{data}{A numeric vector of raw data.  No missing values are allowed.}
+\item{data}{A numeric vector of raw data.}
 
 \item{u}{A numeric scalar.  Extreme value threshold applied to data.}
 
@@ -35,7 +35,7 @@ A list containing the sufficient statistics, with components
 }
 \description{
 Calculates sufficient statistics for the \eqn{K}-gaps model for the extremal
-index \eqn{\theta}.
+index \eqn{\theta}. Called by \code{\link{kgaps}}.
 }
 \details{
 The sample \eqn{K}-gaps are
@@ -55,7 +55,8 @@ The sample \eqn{K}-gaps are
    Specifically, \eqn{N_1} is equal to the number of
    \eqn{S_1, ..., S_{N-1}}{S_1, ..., S_(N-1)}
    that are positive plus \eqn{(I_0 + I_N) / 2}, where \eqn{I_0 = 1} if
-   \eqn{S_0} is greater than zero and similarly for \eqn{I_N}.
+   \eqn{S_0} is greater than zero and \eqn{I_0 = 0} otherwise, and similarly
+   for \eqn{I_N}.
    The differing treatment of uncensored and censored \eqn{K}-gaps reflects
    differing contributions to the likelihood.
    For full details see Suveges and Davison (2010) and Attalides (2015).
@@ -75,11 +76,11 @@ kgaps_stat(newlyn, u)
 Suveges, M. and Davison, A. C. (2010) Model
   misspecification in peaks over threshold analysis, \emph{The Annals of
   Applied Statistics}, \strong{4}(1), 203-221.
-  \url{https://doi.org/10.1214/09-AOAS292}
+  \doi{10.1214/09-AOAS292}
 
 Attalides, N. (2015) Threshold-based extreme value modelling,
   PhD thesis, University College London.
-  \url{http://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
+  \url{https://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
 }
 \seealso{
 \code{\link{kgaps}} for maximum likelihood estimation of the

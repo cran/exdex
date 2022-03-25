@@ -4,8 +4,13 @@
 \alias{plot.choose_b}
 \title{Plot block length diagnostic for the semiparametric maxima estimator}
 \usage{
-\method{plot}{choose_b}(x, y, ..., estimator = c("N2015", "BB2018"),
-  maxima = c("sliding", "disjoint"))
+\method{plot}{choose_b}(
+  x,
+  y,
+  ...,
+  estimator = c("N2015", "BB2018"),
+  maxima = c("sliding", "disjoint")
+)
 }
 \arguments{
 \item{x}{an object of class \code{c("choose_b", "exdex")}, a result of a
@@ -45,12 +50,12 @@ See the examples in \code{\link{choose_b}}.
 
 \references{
 Northrop, P. J. (2015) An efficient semiparametric maxima
-estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
-\url{https://doi.org/10.1007/s10687-015-0221-5}
+  estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
+  \doi{10.1007/s10687-015-0221-5}
 
 Berghaus, B., Bucher, A. (2018) Weak convergence of a pseudo
-maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
-\strong{46}(5), 2307-2335. \url{https://doi.org/10.1214/17-AOS1621}
+  maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
+  \strong{46}(5), 2307-2335. \doi{10.1214/17-AOS1621}
 }
 \seealso{
 \code{\link{choose_b}}.

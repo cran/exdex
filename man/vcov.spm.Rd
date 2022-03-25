@@ -4,8 +4,7 @@
 \alias{vcov.spm}
 \title{Calculate Variance-Covariance Matrix for an \code{"spm"} object}
 \usage{
-\method{vcov}{spm}(object, maxima = c("sliding", "disjoint"),
-  estimator = "all", ...)
+\method{vcov}{spm}(object, maxima = c("sliding", "disjoint"), estimator = "all", ...)
 }
 \arguments{
 \item{object}{and object of class \code{c("spm", "exdex")} returned from
@@ -33,10 +32,10 @@ A 1 by 1 numeric matrix if \code{estimator = "N2015"} or
 }
 \references{
 Northrop, P. J. (2015) An efficient semiparametric maxima
-estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
-\url{https://doi.org/10.1007/s10687-015-0221-5}
+  estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
+  \doi{10.1007/s10687-015-0221-5}
 
 Berghaus, B., Bucher, A. (2018) Weak convergence of a pseudo
-maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
-\strong{46}(5), 2307-2335. \url{https://doi.org/10.1214/17-AOS1621}
+  maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
+  \strong{46}(5), 2307-2335. \doi{10.1214/17-AOS1621}
 }

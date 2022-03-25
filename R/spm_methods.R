@@ -23,10 +23,10 @@
 #'   \eqn{\theta}.
 #' @references Northrop, P. J. (2015) An efficient semiparametric maxima
 #' estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
-#' \url{https://doi.org/10.1007/s10687-015-0221-5}
+#' \doi{10.1007/s10687-015-0221-5}
 #' @references Berghaus, B., Bucher, A. (2018) Weak convergence of a pseudo
 #' maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
-#' \strong{46}(5), 2307-2335. \url{https://doi.org/10.1214/17-AOS1621}
+#' \strong{46}(5), 2307-2335. \doi{10.1214/17-AOS1621}
 #' @export
 coef.spm <- function(object, maxima = c("sliding", "disjoint"),
                      estimator = "all", constrain = FALSE, ...) {
@@ -74,11 +74,11 @@ coef.spm <- function(object, maxima = c("sliding", "disjoint"),
 #'   \code{"BB2018"} and a vector of length 2 if \code{estimator = "both"},
 #'   containing the estimated variance(s) of the estimator(s).
 #' @references Northrop, P. J. (2015) An efficient semiparametric maxima
-#' estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
-#' \url{https://doi.org/10.1007/s10687-015-0221-5}
+#'   estimator of the extremal index. \emph{Extremes} \strong{18}(4), 585-603.
+#'   \doi{10.1007/s10687-015-0221-5}
 #' @references Berghaus, B., Bucher, A. (2018) Weak convergence of a pseudo
-#' maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
-#' \strong{46}(5), 2307-2335. \url{https://doi.org/10.1214/17-AOS1621}
+#'   maximum likelihood estimator for the extremal index. \emph{Ann. Statist.}
+#'   \strong{46}(5), 2307-2335. \doi{10.1214/17-AOS1621}
 #' @export
 vcov.spm <- function(object, maxima = c("sliding", "disjoint"),
                      estimator = "all", ...) {
@@ -174,13 +174,14 @@ print.spm <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
 #'
 #' \code{summary} method for class \code{"spm"}
 #'
-#' @param object an object of class "spm", a result of a call to
+#' @param object an object of class \code{"spm"}, a result of a call to
 #'   \code{\link{spm}}.
 #' @param digits An integer. Used for number formatting with
 #'   \code{\link[base:Round]{signif}}.
 #' @param ... Additional arguments.  None are used in this function.
-#' @return Returns a list containing the list element \code{object$call}
-#'   and a numeric matrix \code{summary} giving, for all three variants of the
+#' @return Returns an object (a list) of class \code{"summary.spm"}
+#'   containing the list element \code{object$call} and a numeric
+#'   matrix \code{matrix} giving, for all three variants of the
 #'   semiparametric estimator and both sliding and disjoint blocks,
 #'   the (bias-adjusted) Estimate of the extremal index \eqn{\theta},
 #'   the estimated standard error (Std. Error),
@@ -235,11 +236,13 @@ summary.spm <- function(object, digits = max(3, getOption("digits") - 3L),
 #'
 #' \code{print} method for an object \code{x} of class \code{"summary.spm"}.
 #'
-#' @param x An object of class "summary.pm", a result of a call to
+#' @param x An object of class \code{"summary.spm"}, a result of a call to
 #'   \code{\link{summary.spm}}.
 #' @param ... Additional arguments passed on to \code{\link{print.default}}.
-#' @return Prints the numeric matrix \code{x$summary} returned from
-#' \code{\link{summary.spm}}.
+#' @details Prints the call and the numeric matrix \code{x$matrix} returned from
+#'   \code{\link{summary.spm}}.
+#' @return The argument \code{x}, invisibly, as for all
+#'   \code{\link[base]{print}} methods.
 #' @seealso \code{\link{spm}} for estimation of the extremal index
 #'   \eqn{\theta} using a semiparametric maxima method.
 #' @seealso \code{\link{confint.spm}} for estimation of confidence intervals

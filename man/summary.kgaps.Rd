@@ -4,8 +4,7 @@
 \alias{summary.kgaps}
 \title{Summary method for a \code{"kgaps"} object}
 \usage{
-\method{summary}{kgaps}(object, digits = max(3, getOption("digits") -
-  3L), ...)
+\method{summary}{kgaps}(object, digits = max(3, getOption("digits") - 3L), ...)
 }
 \arguments{
 \item{object}{an object of class "kgaps", a result of a call to
@@ -18,7 +17,7 @@
 }
 \value{
 Returns a list containing the list element \code{object$call}
-  and a numeric matrix \code{summary} giving the Estimate of the extremal
+  and a numeric matrix \code{summary} giving the estimate of the extremal
   index \eqn{\theta} and the estimated standard error (Std. Error).
 }
 \description{

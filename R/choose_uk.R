@@ -7,11 +7,23 @@
 #' run parameter \eqn{K} for the \eqn{K}-gaps estimator (see
 #' \code{\link{kgaps}}).  \code{\link{plot.choose_uk}} creates the plot.
 #'
-#' @param data A numeric vector of raw data.  No missing values are allowed.
+#' @param data A numeric vector or numeric matrix of raw data.  If \code{data}
+#'   is a matrix then the log-likelihood is constructed as the sum of
+#'   (independent) contributions from different columns. A common situation is
+#'   where each column relates to a different year.
+#'
+#'   If \code{data} contains missing values then \code{\link{split_by_NAs}} is
+#'   used to divide the data into sequences of non-missing values.
 #' @param u,k Numeric vectors.  \code{u} is a vector of
 #'   extreme value thresholds applied to data.  \code{k} is a vector of values
 #'   of the run parameter \eqn{K}, as defined in Suveges and Davison (2010).
 #'   See \code{\link{kgaps}} for more details.
+#'
+#'   Any values in \code{u} that are greater than all the observations in
+#'   \code{data} will be removed without a warning being given.
+#' @param inc_cens A logical scalar indicating whether or not to include
+#'   contributions from censored inter-exceedance times, relating to the
+#'   first and last observations.  See Attalides (2015) for details.
 #' @details For each combination of threshold in \code{u} and \eqn{K}
 #'   in \code{k} the functions \code{\link{kgaps}} and \code{\link{kgaps_imt}}
 #'   are called in order to estimate \eqn{\theta} and to perform the
@@ -19,7 +31,10 @@
 #' @references Suveges, M. and Davison, A. C. (2010) Model
 #'   misspecification in peaks over threshold analysis, \emph{The Annals of
 #'   Applied Statistics}, \strong{4}(1), 203-221.
-#'   \url{https://doi.org/10.1214/09-AOAS292}
+#'   \doi{10.1214/09-AOAS292}
+#' @references Attalides, N. (2015) Threshold-based extreme value modelling,
+#'   PhD thesis, University College London.
+#'   \url{https://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
 #' @return An object (a list) of class \code{c("choose_uk", "exdex")}
 #'   containing
 #'   \item{imt }{an object of class \code{c("kgaps_imt", "exdex")} returned
@@ -60,8 +75,25 @@
 #' u <- quantile(newlyn, probs = seq(0.1, 0.9, by = 0.1))
 #' imt_theta <- choose_uk(newlyn, u = u, k = 1:5)
 #' plot(imt_theta, uprob = TRUE)
+#'
+#' ### Cheeseboro wind gusts (a matrix containing some NAs)
+#'
+#' probs <- c(seq(0.5, 0.98, by = 0.025), 0.99)
+#' u <- quantile(cheeseboro, probs = probs, na.rm = TRUE)
+#' imt_theta <- choose_uk(cheeseboro, u, k = 1:10)
+#' plot(imt_theta, uprob = FALSE, lwd = 2)
 #' @export
-choose_uk <- function(data, u, k = 1) {
+choose_uk <- function(data, u, k = 1, inc_cens = TRUE) {
+  # If there are missing values then use split_by_NAs to extract sequences
+  # of non-missing values
+  if (anyNA(data) && is.null(attr(data, "split_by_NAs_done"))) {
+    data <- split_by_NAs(data)
+  } else if (!is.matrix(data)) {
+    data <- as.matrix(data)
+  }
+  # Remove any thresholds that are greater than all the observations
+  u_ok <- vapply(u, function(u) any(data > u), TRUE)
+  u <- u[u_ok]
   n_u <- length(u)
   n_k <- length(k)
   theta <- matrix(rep(list(), n_u * n_k), n_k, n_u)
@@ -72,10 +104,11 @@ choose_uk <- function(data, u, k = 1) {
   }
   for (i in 1:n_k) {
     for (j in 1:n_u) {
-      theta[[comp(i, j)]] <- kgaps(data, u[j], k[i])
+      theta[[comp(i, j)]] <- kgaps(data = data, u = u[j], k = k[i],
+                                   inc_cens = inc_cens)
     }
   }
-  imt <- kgaps_imt(data, u, k)
+  imt <- kgaps_imt(data = data, u = u, k = k, inc_cens = inc_cens)
   res <- list(imt = imt, theta = theta)
   class(res) <- c("choose_uk", "exdex")
   return(res)
@@ -83,7 +116,7 @@ choose_uk <- function(data, u, k = 1) {
 
 # ============================= plot.choose_uk ===============================
 
-#' Plot Threshold \eqn{u} and runs parameter \eqn{K} diagnostic for the
+#' Plot threshold \eqn{u} and runs parameter \eqn{K} diagnostic for the
 #' \eqn{K}-gaps estimator
 #'
 #' \code{plot} method for objects inheriting from class \code{"choose_uk"},
@@ -212,7 +245,7 @@ plot.choose_uk <- function(x, y = c("imts", "theta"), level = 0.95,
                         interval_type = interval_type,
                         conf_scale = conf_scale, constrain = constrain)
         ymat[ij, 1] <- kgaps_object$theta
-        ymat[ij, 2:3] <- temp
+        ymat[ij, 2:3] <- temp$cis
       }
       my_ylab <- "theta"
       my_xlab <- ifelse(cond1, "threshold u", "run parameter K")

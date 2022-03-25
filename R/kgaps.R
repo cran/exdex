@@ -6,7 +6,15 @@
 #' based on the \eqn{K}-gaps model for threshold inter-exceedances times of
 #' Suveges and Davison (2010).
 #'
-#' @param data A numeric vector of raw data.  No missing values are allowed.
+#' @param data A numeric vector or numeric matrix of raw data.  If \code{data}
+#'   is a matrix then the log-likelihood is constructed as the sum of
+#'   (independent) contributions from different columns. A common situation is
+#'   where each column relates to a different year.
+#'
+#'   If \code{data} contains missing values then \code{\link{split_by_NAs}} is
+#'   used to divide the data further into sequences of non-missing values,
+#'   stored in different columns in a matrix.  Again, the log-likelihood
+#'   is constructed as a sum of contributions from different columns.
 #' @param u A numeric scalar.  Extreme value threshold applied to data.
 #' @param k A numeric scalar.  Run parameter \eqn{K}, as defined in Suveges and
 #'   Davison (2010).  Threshold inter-exceedances times that are not larger
@@ -15,8 +23,8 @@
 #'   corresponding to an inter-exceedance time of \eqn{T} is given by
 #'   \eqn{S = \max(T - K, 0)}{S = max(T - K, 0)}.
 #' @param inc_cens A logical scalar indicating whether or not to include
-#'   contributions from censored inter-exceedance times relating to the
-#'   first and last observation.  See Attalides (2015) for details.
+#'   contributions from censored inter-exceedance times, relating to the
+#'   first and last observations.  See Attalides (2015) for details.
 #' @details The maximum likelihood estimate of the extremal index \eqn{\theta}
 #'   under the \eqn{K}-gaps model of Suveges and Davison (2010) is calculated.
 #'   If \code{inc_cens = TRUE} then information from censored inter-exceedance
@@ -30,10 +38,10 @@
 #' @references Suveges, M. and Davison, A. C. (2010) Model
 #'   misspecification in peaks over threshold analysis, \emph{The Annals of
 #'   Applied Statistics}, \strong{4}(1), 203-221.
-#'   \url{https://doi.org/10.1214/09-AOAS292}
+#'   \doi{10.1214/09-AOAS292}
 #' @references Attalides, N. (2015) Threshold-based extreme value modelling,
 #'   PhD thesis, University College London.
-#'   \url{http://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
+#'   \url{https://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
 #' @return An object (a list) of class \code{c("kgaps", "exdex")} containing
 #'     \item{\code{theta} }{The maximum likelihood estimate (MLE) of
 #'       \eqn{\theta}.}
@@ -42,6 +50,7 @@
 #'       \code{\link{kgaps_stat}}.}
 #'     \item{\code{k, u, inc_cens} }{The input values of \code{k},
 #'       \code{u} and \code{inc_cens}.}
+#'     \item{\code{max_loglik }}{The value of the log-likelihood at the MLE.}
 #'     \item{\code{call }}{The call to \code{kgaps}.}
 #' @seealso \code{\link{confint.kgaps}} to estimate confidence intervals
 #'   for \eqn{\theta}.
@@ -67,23 +76,36 @@
 #' ### Newlyn sea surges
 #'
 #' u <- quantile(newlyn, probs = 0.60)
-#' theta <- kgaps(newlyn, u, k= 2)
+#' theta <- kgaps(newlyn, u, k = 2)
+#' theta
+#' summary(theta)
+#'
+#' ### Cheeseboro wind gusts
+#'
+#' theta <- kgaps(cheeseboro, 45, k = 3)
 #' theta
 #' summary(theta)
 #' @export
-kgaps <- function(data, u, k = 1, inc_cens = FALSE) {
+kgaps <- function(data, u, k = 1, inc_cens = TRUE) {
   Call <- match.call(expand.dots = TRUE)
   if (!is.numeric(u) || length(u) != 1) {
     stop("u must be a numeric scalar")
   }
-  if (u >= max(data)) {
+  if (u >= max(data, na.rm = TRUE)) {
     stop("u must be less than max(data)")
   }
   if (!is.numeric(k) || length(k) != 1) {
     stop("k must be a numeric scalar")
   }
-  # Calculate sufficient statistics
-  ss <- kgaps_stat(data, u, k, inc_cens)
+  # If there are missing values then use split_by_NAs to extract sequences
+  # of non-missing values
+  if (anyNA(data) && is.null(attr(data, "split_by_NAs_done"))) {
+    data <- split_by_NAs(data)
+  }
+  # Calculate sufficient statistics for each column in data and then sum
+  stats_list <- apply(as.matrix(data), 2, kgaps_stat, u = u, k = k,
+                      inc_cens = inc_cens)
+  ss <- Reduce(f = function(...) Map("+", ...), stats_list)
   # If N0 = 0 then all exceedances occur singly (all K-gaps are positive)
   # and the likelihood is maximized at theta = 1.
   N0 <- ss$N0
@@ -107,8 +129,9 @@ kgaps <- function(data, u, k = 1, inc_cens = FALSE) {
     obs_info <- obs_info + 2 * N1 / theta_mle ^ 2
   }
   theta_se <- sqrt(1 / obs_info)
+  max_loglik <- do.call(kgaps_loglik, c(list(theta = theta_mle), ss))
   res <- list(theta = theta_mle, se = theta_se, ss = ss, k = k,
-              u = u, inc_cens = inc_cens, call = Call)
+              u = u, inc_cens = inc_cens, max_loglik = max_loglik, call = Call)
   class(res) <- c("kgaps", "exdex")
   return(res)
 }
@@ -118,9 +141,9 @@ kgaps <- function(data, u, k = 1, inc_cens = FALSE) {
 #' Sufficient statistics for the \eqn{K}-gaps model
 #'
 #' Calculates sufficient statistics for the \eqn{K}-gaps model for the extremal
-#' index \eqn{\theta}.
+#' index \eqn{\theta}. Called by \code{\link{kgaps}}.
 #'
-#' @param data A numeric vector of raw data.  No missing values are allowed.
+#' @param data A numeric vector of raw data.
 #' @param u A numeric scalar.  Extreme value threshold applied to data.
 #' @param k A numeric scalar.  Run parameter \eqn{K}, as defined in Suveges and
 #'   Davison (2010).  Threshold inter-exceedances times that are not larger
@@ -148,7 +171,8 @@ kgaps <- function(data, u, k = 1, inc_cens = FALSE) {
 #'    Specifically, \eqn{N_1} is equal to the number of
 #'    \eqn{S_1, ..., S_{N-1}}{S_1, ..., S_(N-1)}
 #'    that are positive plus \eqn{(I_0 + I_N) / 2}, where \eqn{I_0 = 1} if
-#'    \eqn{S_0} is greater than zero and similarly for \eqn{I_N}.
+#'    \eqn{S_0} is greater than zero and \eqn{I_0 = 0} otherwise, and similarly
+#'    for \eqn{I_N}.
 #'    The differing treatment of uncensored and censored \eqn{K}-gaps reflects
 #'    differing contributions to the likelihood.
 #'    For full details see Suveges and Davison (2010) and Attalides (2015).
@@ -171,34 +195,32 @@ kgaps <- function(data, u, k = 1, inc_cens = FALSE) {
 #' @references Suveges, M. and Davison, A. C. (2010) Model
 #'   misspecification in peaks over threshold analysis, \emph{The Annals of
 #'   Applied Statistics}, \strong{4}(1), 203-221.
-#'   \url{https://doi.org/10.1214/09-AOAS292}
+#'   \doi{10.1214/09-AOAS292}
 #' @references Attalides, N. (2015) Threshold-based extreme value modelling,
 #'   PhD thesis, University College London.
-#'   \url{http://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
+#'   \url{https://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
 #' @seealso \code{\link{kgaps}} for maximum likelihood estimation of the
 #'   extremal index \eqn{\theta} using the \eqn{K}-gaps model.
 #' @examples
 #' u <- quantile(newlyn, probs = 0.90)
 #' kgaps_stat(newlyn, u)
 #' @export
-kgaps_stat <- function(data, u, k = 1, inc_cens = FALSE) {
-  if (any(is.na(data))) {
-    stop("No missing values are allowed in ''data''")
-  }
+kgaps_stat <- function(data, u, k = 1, inc_cens = TRUE) {
+  data <- stats::na.omit(data)
   if (!is.numeric(u) || length(u) != 1) {
     stop("u must be a numeric scalar")
   }
-  if (u >= max(data)) {
-    stop("u must be less than max(data)")
-  }
   if (!is.numeric(k) || length(k) != 1) {
     stop("k must be a numeric scalar")
+  }
+  # If all the data are smaller than the threshold then return null results
+  if (u >= max(data, na.rm = TRUE)) {
+    return(list(N0 = 0, N1 = 0, sum_qs = 0, n_kgaps = 0))
   }
   # Sample size, positions, number and proportion of exceedances
   nx <- length(data)
   exc_u <- (1:nx)[data > u]
   N_u <- length(exc_u)
-#  q_u <- (N_u - 1) / nx # mev
   q_u <- N_u / nx
   # Inter-exceedances times and K-gaps
   T_u <- diff(exc_u)
@@ -229,4 +251,3 @@ kgaps_stat <- function(data, u, k = 1, inc_cens = FALSE) {
   }
   return(list(N0 = N0, N1 = N1, sum_qs = sum_qs, n_kgaps = n_kgaps))
 }
-
