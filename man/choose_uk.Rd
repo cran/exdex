@@ -79,14 +79,21 @@ plot(imt_theta, uprob = TRUE)
 
 ### Cheeseboro wind gusts (a matrix containing some NAs)
 
-probs <- c(seq(0.5, 0.98, by = 0.025), 0.99)
+probs <- c(seq(0.5, 0.95, by = 0.05), 0.99)
 u <- quantile(cheeseboro, probs = probs, na.rm = TRUE)
-imt_theta <- choose_uk(cheeseboro, u, k = 1:10)
+imt_theta <- choose_uk(cheeseboro, u, k = 1:6)
 plot(imt_theta, uprob = FALSE, lwd = 2)
+
+### Uccle July temperatures
+
+probs <- c(seq(0.7, 0.95, by = 0.05), 0.99)
+u <- quantile(uccle720m, probs = probs, na.rm = TRUE)
+imt_theta <- choose_uk(uccle720m, u, k = 1:5)
+plot(imt_theta, uprob = TRUE, lwd = 2)
 }
 \references{
 Suveges, M. and Davison, A. C. (2010) Model
-  misspecification in peaks over threshold analysis, \emph{The Annals of
+  misspecification in peaks over threshold analysis, \emph{Annals of
   Applied Statistics}, \strong{4}(1), 203-221.
   \doi{10.1214/09-AOAS292}
 

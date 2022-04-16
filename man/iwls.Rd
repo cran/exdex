@@ -41,9 +41,9 @@ The iterated weighted least squares algorithm on page 46 of
   The model underlying this approach is an exponential-point mas mixture
   for \emph{scaled gaps}, that is, gaps multiplied by the proportion of
   values in  \code{data} that exceed \code{u}.  Under this model
-  scaled gaps are zero (`within-cluster' interexceedance times) with
+  scaled gaps are zero (`within-cluster' inter-exceedance times) with
   probability \eqn{1 - \theta} and otherwise (`between-cluster'
-  interexceedance times) follow an exponential distribution with mean
+  inter-exceedance times) follow an exponential distribution with mean
   \eqn{1 / \theta}.
   The estimation method is based on fitting the `broken stick' model of
   Ferro (2003) to an exponential quantile-quantile plot of all of the
@@ -53,9 +53,9 @@ The iterated weighted least squares algorithm on page 46 of
   Suveges (2007) uses a weighted least squares minimization applied to
   the exponential
   part of this model to seek a compromise between the role of \eqn{\theta}
-  as the proportion of interexceedance times that are between-cluster
+  as the proportion of inter-exceedance times that are between-cluster
   and the reciprocal of the mean of an exponential distribution for these
-  interexceedance times.  The weights (see Ferro (2003)) are based on the
+  inter-exceedance times.  The weights (see Ferro (2003)) are based on the
   variances of order statistics of a standard exponential sample: larger
   order statistics have larger sampling variabilities and therefore
   receive smaller weight than smaller order statistics.
@@ -71,6 +71,8 @@ The iterated weighted least squares algorithm on page 46 of
 u <- quantile(sp500, probs = 0.60)
 theta <- iwls(sp500, u)
 theta
+coef(theta)
+nobs(theta)
 
 ### Newlyn sea surges
 
@@ -87,9 +89,6 @@ Ferro, C.A.T. (2003) Statistical methods for clusters of
   extreme values. Ph.D. thesis, Lancaster University.
 }
 \seealso{
-\code{\link{kgaps}} for maximum likelihood estimation of the
-  extremal index \eqn{\theta} using the \eqn{K}-gaps model.
-
-\code{\link{spm}} for estimation of the extremal index
-  \eqn{\theta} using a semiparametric maxima method.
+\code{\link{iwls_methods}} for S3 methods for \code{"iwls"}
+  objects.
 }

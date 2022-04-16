@@ -1,3 +1,21 @@
+#' Confidence intervals for the extremal index \eqn{\theta} for \code{"spm"}
+#' objects
+#' @name spm_confint
+NULL
+## NULL
+
+#' Confidence intervals for the extremal index \eqn{\theta} for \code{"kgaps"}
+#' objects
+#' @name kgaps_confint
+NULL
+## NULL
+
+#' Confidence intervals for the extremal index \eqn{\theta} for \code{"dgaps"}
+#' objects
+#' @name dgaps_confint
+NULL
+## NULL
+
 # =============================== confint.spm =============================== #
 
 #' Confidence intervals for the extremal index \eqn{\theta}
@@ -11,7 +29,9 @@
 #' point estimates, and (b) likelihood-based intervals based on an adjustment
 #' of a naive (pseudo-) loglikelihood, using the
 #' \code{\link[chandwich]{adjust_loglik}} function in the
-#' \code{\link[chandwich]{chandwich}} package.
+#' \code{\link[chandwich]{chandwich}} package. The \code{plot} method plots the
+#' log-likelihood for \eqn{\theta}, with the required confidence interval(s)
+#' indicated on the plot.
 #'
 #' @param object An object of class \code{c("spm", "exdex")}, returned by
 #'   \code{\link{spm}}.
@@ -69,7 +89,12 @@
 #'   if (the default) \code{sliding = TRUE} was used in the call to
 #'   \code{\link{spm}} then the unadjusted likelihood-based confidence
 #'   intervals provide \emph{vast} underestimates of uncertainty.
-#' @param ... Further arguments. None are used currently.
+#' @param ...
+#'   \code{plot.confint_spm}: further arguments passed to
+#'   \code{\link[chandwich]{plot.confint}}.
+#'
+#'   \code{print.confint_spm}: further arguments passed to
+#'   \code{\link{print.default}}.
 #' @details The likelihood-based intervals are estimated using the
 #'   \code{\link[chandwich]{adjust_loglik}} function in the
 #'   \code{\link[chandwich]{chandwich}} package, followed by a call to
@@ -138,8 +163,7 @@
 #' cis <- confint(theta, interval_type = "lik")
 #' cis
 #' plot(cis)
-#' @seealso \code{\link{plot.confint_spm}}: \code{plot} method for
-#'   class \code{c("confint_spm", "exdex")}.
+#' @rdname spm_confint
 #' @export
 confint.spm <- function (object, parm = "theta", level = 0.95,
                          maxima = c("sliding", "disjoint"),
@@ -334,11 +358,8 @@ confint.spm <- function (object, parm = "theta", level = 0.95,
 
 #' Plot diagnostics for a confint_spm object
 #'
-#' \code{plot} method for an objects of class \code{c("confint_spm", "exdex")}.
-#'
 #' @param x an object of class \code{c("confint_spm", "exdex")}, a result of
 #'   a call to \code{\link{confint.spm}}.
-#' @param y Not used.
 #' @param estimator A character vector specifying which of the three variants
 #'   of the semiparametric maxima estimator to include in the plot:
 #'   \code{"N2015", "BB2018"} or \code{"BB2018b"}.  See \code{\link{spm}} for
@@ -347,13 +368,10 @@ confint.spm <- function (object, parm = "theta", level = 0.95,
 #'   contains the confidence limits rounded to \code{ndec} decimal places.
 #' @param ... Further arguments to be passed to
 #'   \code{\link[chandwich]{plot.confint}}.
-#' @return Nothing is returned.
-#' @seealso \code{\link{confint.spm}}: \code{confint} method for
-#'   class \code{c("spm", "exdex")}.
-#' @section Examples:
-#' See the examples in \code{\link{confint.spm}}.
+#' @return \code{plot.confint_spm}: nothing is returned.
+#' @rdname spm_confint
 #' @export
-plot.confint_spm <- function(x, y = NULL, estimator = "all", ndec = 2, ...) {
+plot.confint_spm <- function(x, estimator = "all", ndec = 2, ...) {
   if (!inherits(x, "exdex")) {
     stop("use only with \"exdex\" objects")
   }
@@ -467,19 +485,16 @@ plot.confint_spm <- function(x, y = NULL, estimator = "all", ndec = 2, ...) {
 
 #' Print method for a confint_spm object
 #'
-#' \code{print} method for class \code{c("confint_spm", "exdex")}.
-#'
 #' @param x an object of class \code{c("confint_spm", "exdex")}, a result of
 #'   a call to \code{\link{confint.spm}}.
 #' @param ... Additional optional arguments to be passed to
 #'   \code{\link{print.default}}
-#' @details Prints the matrix of confidence intervals for \eqn{\theta}.
-#' @return The argument \code{x}, invisibly, as for all
-#'   \code{\link[base]{print}} methods.
+#' @details \code{print.confint_spm} prints the matrix of confidence
+#'   intervals for \eqn{\theta}.
+#' @return \code{print.confint_spm}: the argument \code{x}, invisibly.
 #' @seealso \code{\link{spm}} for estimation of the extremal index
 #'   \eqn{\theta} using a semiparametric maxima method.
-#' @seealso \code{\link{confint.spm}}: \code{confint} method for
-#'   class \code{"spm"}.
+#' @rdname spm_confint
 #' @export
 print.confint_spm <- function(x, ...) {
   if (!inherits(x, "exdex")) {
@@ -498,8 +513,9 @@ print.confint_spm <- function(x, ...) {
 #' from \code{\link{kgaps}}.  Two types of interval may be returned:
 #' (a) intervals based on approximate large-sample normality of the estimator
 #' of \eqn{\theta}, which are symmetric about the point estimate,
-#' and (b) likelihood-based intervals.
-#'
+#' and (b) likelihood-based intervals. The \code{plot} method plots the
+#' log-likelihood for \eqn{\theta}, with the required confidence interval
+#' indicated on the plot.
 #' @param object An object of class \code{c("kgaps", "exdex")}, returned by
 #'   \code{\link{kgaps}}.
 #' @param parm Specifies which parameter is to be given a confidence interval.
@@ -522,7 +538,15 @@ print.confint_spm <- function(x, ...) {
 #'   limits that are greater than 1 may be obtained.
 #'   If \code{constrain = TRUE} then any lower confidence limits that are
 #'   less than 0 are set to 0.
-#' @param ... Further arguments. None are used currently.
+#' @param se_type A character scalar. Should the confidence intervals for the
+#'   \code{interval_type  = "norm"} use the estimated standard error based on
+#'   the observed information or based on the expected information?
+#' @param ...
+#'   \code{plot.confint_kgaps}: further arguments passed to
+#'   \code{\link[chandwich]{plot.confint}}.
+#'
+#'   \code{print.confint_kgaps}: further arguments passed to
+#'   \code{\link{print.default}}.
 #' @details Two type of interval are calculated: (a) an interval based on the
 #'   approximate large sample normality of the estimator of \eqn{\theta}
 #'   (if \code{conf_scale = "theta"}) or of \eqn{\log\theta}{log\theta}
@@ -541,7 +565,7 @@ print.confint_spm <- function(x, ...) {
 #'   \item{object}{The input object \code{object}.}
 #'   \item{level}{The input \code{level}.}
 #' @references Suveges, M. and Davison, A. C. (2010) Model
-#'   misspecification in peaks over threshold analysis, \emph{The Annals of
+#'   misspecification in peaks over threshold analysis, \emph{Annals of
 #'   Applied Statistics}, \strong{4}(1), 203-221.
 #'   \doi{10.1214/09-AOAS292}
 #' @examples
@@ -550,28 +574,34 @@ print.confint_spm <- function(x, ...) {
 #' cis <- confint(theta)
 #' cis
 #' plot(cis)
+#' @rdname kgaps_confint
 #' @export
 confint.kgaps <- function (object, parm = "theta", level = 0.95,
                            interval_type = c("both", "norm", "lik"),
                            conf_scale = c("theta", "log"), constrain = TRUE,
-                           ...) {
+                           se_type = c("observed", "expected"), ...) {
   if (!inherits(object, "exdex")) {
     stop("use only with \"exdex\" objects")
   }
   Call <- match.call(expand.dots = TRUE)
   parm <- match.arg(parm)
+  se_type <- match.arg(se_type)
   if (level <= 0 || level >= 1) {
     stop("''level'' must be in (0, 1)")
   }
   interval_type <- match.arg(interval_type)
   conf_scale <- match.arg(conf_scale)
   theta <- coef(object)
-  se <- sqrt(vcov(object))
   if (interval_type == "norm" || interval_type == "both") {
     # Symmetric confidence intervals, based on large sample normal theory
     # The intervals are (initially) centred on the unconstrained estimate of
     # theta, which may be greater than 1
     z_val <- stats::qnorm(1 - (1 - level) / 2)
+    if (se_type == "observed") {
+      se <- object$se
+    } else {
+      se <- object$se_exp
+    }
     if (conf_scale == "theta") {
       lower <- theta - z_val * se
       upper <- theta + z_val * se
@@ -616,21 +646,12 @@ confint.kgaps <- function (object, parm = "theta", level = 0.95,
 
 #' Plot diagnostics for a confint_kgaps object
 #'
-#' \code{plot} method for an objects of class
-#' \code{c("confint_kgaps", "exdex")}.
-#'
 #' @param x an object of class \code{c("confint_kgaps", "exdex")}, a result of
 #'   a call to \code{\link{confint.kgaps}}.
-#' @param y Not used.
-#' @param ... Further arguments to be passed to
-#'   \code{\link[chandwich]{plot.confint}}.
-#' @return Nothing is returned.
-#' @seealso \code{\link{confint.kgaps}}: \code{confint} method for
-#'   class \code{c("kgaps", "exdex")}.
-#' @section Examples:
-#' See the examples in \code{\link{confint.kgaps}}.
+#' @return \code{plot.confint_kgaps}: nothing is returned.
+#' @rdname kgaps_confint
 #' @export
-plot.confint_kgaps <- function(x, y = NULL, ...) {
+plot.confint_kgaps <- function(x, ...) {
   if (!inherits(x, "exdex")) {
     stop("use only with \"exdex\" objects")
   }
@@ -661,21 +682,211 @@ plot.confint_kgaps <- function(x, y = NULL, ...) {
 
 #' Print method for a confint_kgaps object
 #'
-#' \code{print} method for class \code{c("confint_kgaps", "exdex")}.
-#'
 #' @param x an object of class \code{c("confint_kgaps", "exdex")}, a result of
 #'   a call to \code{\link{confint.kgaps}}.
-#' @param ... Additional optional arguments to be passed to
-#'   \code{\link{print.default}}
-#' @details Prints the matrix of confidence intervals for \eqn{\theta}.
-#' @return The argument \code{x}, invisibly, as for all
-#'   \code{\link[base]{print}} methods.
+#' @details \code{print.confint_kgaps} prints the matrix of confidence
+#'   intervals for \eqn{\theta}.
+#' @return \code{print.confint_kgaps}: the argument \code{x}, invisibly.
 #' @seealso \code{\link{kgaps}} for estimation of the extremal index
 #'   \eqn{\theta} using a semiparametric maxima method.
-#' @seealso \code{\link{confint.kgaps}}: \code{confint} method for
-#'   class \code{"kgaps"}.
+#' @rdname kgaps_confint
 #' @export
 print.confint_kgaps <- function(x, ...) {
+  if (!inherits(x, "exdex")) {
+    stop("use only with \"exdex\" objects")
+  }
+  print(x$cis, ...)
+  return(invisible(x))
+}
+
+# ============================== confint.dgaps ============================== #
+
+#' Confidence intervals for the extremal index \eqn{\theta}
+#'
+#' \code{confint} method for objects of class \code{c("dgaps", "exdex")}.
+#' Computes confidence intervals for \eqn{\theta} based on an object returned
+#' from \code{\link{dgaps}}.  Two types of interval may be returned:
+#' (a) intervals based on approximate large-sample normality of the estimator
+#' of \eqn{\theta}, which are symmetric about the point estimate,
+#' and (b) likelihood-based intervals. The \code{plot} method plots the
+#' log-likelihood for \eqn{\theta}, with the required confidence interval
+#' indicated on the plot.
+#'
+#' @param object An object of class \code{c("dgaps", "exdex")}, returned by
+#'   \code{\link{dgaps}}.
+#' @param parm Specifies which parameter is to be given a confidence interval.
+#'   Here there is only one option: the extremal index \eqn{\theta}.
+#' @param level The confidence level required.  A numeric scalar in (0, 1).
+#' @param interval_type A character scalar: \code{"norm"} for intervals of
+#'   type (a), \code{"lik"} for intervals of type (b).
+#' @param conf_scale A character scalar.  If \code{interval_type = "norm"} then
+#'   \code{conf_scale} determines the scale on which we use approximate
+#'   large-sample normality of the estimator to estimate confidence intervals.
+#'
+#'   If \code{conf_scale = "theta"}
+#'   then confidence intervals are estimated for \eqn{\theta} directly.
+#'   If \code{conf_scale = "log"} then confidence intervals are first
+#'   estimated for \eqn{\log\theta}{log\theta} and then transformed back
+#'   to the \eqn{\theta}-scale.
+#' @param constrain A logical scalar.  If \code{constrain = TRUE} then
+#'   any confidence limits that are greater than 1 are set to 1,
+#'   that is, they are constrained to lie in (0, 1].  Otherwise,
+#'   limits that are greater than 1 may be obtained.
+#'   If \code{constrain = TRUE} then any lower confidence limits that are
+#'   less than 0 are set to 0.
+#' @param se_type A character scalar. Should the confidence intervals for the
+#'   \code{interval_type  = "norm"} use the estimated standard error based on
+#'   the observed information or based on the expected information?
+#' @param ...
+#'   \code{plot.confint_dgaps}: further arguments passed to
+#'   \code{\link[chandwich]{plot.confint}}.
+#'
+#'   \code{print.confint_dgaps}: further arguments passed to
+#'   \code{\link{print.default}}.
+#' @details Two type of interval are calculated: (a) an interval based on the
+#'   approximate large sample normality of the estimator of \eqn{\theta}
+#'   (if \code{conf_scale = "theta"}) or of \eqn{\log\theta}{log\theta}
+#'   (if \code{conf_scale = "log"}) and (b) a likelihood-based interval,
+#'   based on the approximate large sample chi-squared, with 1 degree of
+#'   freedom, distribution of the log-likelihood ratio statistic.
+#' @return A list of class c("confint_dgaps", "exdex") containing the
+#'   following components.
+#'   \item{cis}{A matrix with columns giving the lower and upper confidence
+#'   limits. These are labelled as (1 - level)/2 and 1 - (1 - level)/2 in
+#'   \% (by default 2.5\% and 97.5\%).
+#'   The row names indicate the type of interval:
+#'   \code{norm} for intervals based on large sample normality and \code{lik}
+#'   for likelihood-based intervals.}
+#'   \item{call}{The call to \code{spm}.}
+#'   \item{object}{The input object \code{object}.}
+#'   \item{level}{The input \code{level}.}
+#' @references Holesovsky, J. and Fusek, M. Estimation of the extremal index
+#'   using censored distributions. Extremes 23, 197-213 (2020).
+#'   \doi{10.1007/s10687-020-00374-3}
+#' @examples
+#' u <- quantile(newlyn, probs = 0.90)
+#' theta <- dgaps(newlyn, u)
+#' cis <- confint(theta)
+#' cis
+#' plot(cis)
+#' @rdname dgaps_confint
+#' @export
+confint.dgaps <- function (object, parm = "theta", level = 0.95,
+                           interval_type = c("both", "norm", "lik"),
+                           conf_scale = c("theta", "log"), constrain = TRUE,
+                           se_type = c("observed", "expected"), ...) {
+  if (!inherits(object, "exdex")) {
+    stop("use only with \"exdex\" objects")
+  }
+  Call <- match.call(expand.dots = TRUE)
+  parm <- match.arg(parm)
+  se_type <- match.arg(se_type)
+  if (level <= 0 || level >= 1) {
+    stop("''level'' must be in (0, 1)")
+  }
+  interval_type <- match.arg(interval_type)
+  conf_scale <- match.arg(conf_scale)
+  theta <- coef(object)
+  if (interval_type == "norm" || interval_type == "both") {
+    # Symmetric confidence intervals, based on large sample normal theory
+    # The intervals are (initially) centred on the unconstrained estimate of
+    # theta, which may be greater than 1
+    z_val <- stats::qnorm(1 - (1 - level) / 2)
+    if (se_type == "observed") {
+      se <- object$se
+    } else {
+      se <- object$se_exp
+    }
+    if (conf_scale == "theta") {
+      lower <- theta - z_val * se
+      upper <- theta + z_val * se
+    } else {
+      lower <- exp(log(theta) - z_val * se / theta)
+      upper <- exp(log(theta) + z_val * se / theta)
+    }
+  } else {
+    lower <- upper <- NULL
+  }
+  if (interval_type == "lik" || interval_type == "both") {
+    # Likelihood-based confidence intervals.
+    temp <- dgaps_conf_int(theta_mle = theta, ss = object$ss,
+                           conf = 100 * level)
+    lower <- c(lower, temp[1])
+    upper <- c(upper, temp[2])
+  }
+  # Constrain the intervals to (0, 1] if required
+  if (constrain) {
+    lower <- pmin(lower, 1)
+    lower <- pmax(lower, 0)
+    upper <- pmin(upper, 1)
+  }
+  temp <- cbind(lower, upper)
+  a <- (1 - level) / 2
+  a <- c(a, 1 - a)
+  pct <- paste(round(100 * a, 1), "%")
+  colnames(temp) <- pct
+  row_names <- interval_type
+  if (row_names == "both") {
+    row_names <- c("norm", "lik")
+  }
+  rownames(temp) <- row_names
+  temp <- list(cis = temp, call = Call, object = object, level = level)
+  class(temp) <- c("confint_dgaps", "exdex")
+  return(temp)
+}
+
+# ========================= Method for confint_dgaps ======================== #
+
+# ---------------------------- plot.confint_dgaps --------------------------- #
+
+#' Plot diagnostics for a confint_dgaps object
+#'
+#' @param x an object of class \code{c("confint_dgaps", "exdex")}, a result of
+#'   a call to \code{\link{confint.dgaps}}.
+#' @return \code{plot.confint_dgaps}: nothing is returned.
+#' @rdname dgaps_confint
+#' @export
+plot.confint_dgaps <- function(x, ...) {
+  if (!inherits(x, "exdex")) {
+    stop("use only with \"exdex\" objects")
+  }
+  if (!("lik" %in% rownames(x$cis))) {
+    stop("Plot method not available when interval_type = ''norm''")
+  }
+  prof_ci <- x$cis[rownames(x$cis) == "lik"]
+  theta <- seq(0.99 * prof_ci[1], 1.01 * prof_ci[2], length = 100)
+  dloglik <- function(theta) {
+    do.call(dgaps_loglik, c(list(theta = theta), x$object$ss))
+  }
+  prof_lik <- vapply(theta, dloglik, 0.0)
+  my_plot <- function(xx, y, ..., type = "l", xlab = expression(theta),
+                      ylab = "log-likelihood",
+                      main = paste0(100 * x$level, "% confidence interval")) {
+    graphics::plot(xx, y, ..., type = type, xlab = xlab, ylab = ylab,
+                   main = main)
+  }
+  my_plot(theta, prof_lik, ...)
+  cutoff <- x$object$max_loglik - stats::qchisq(x$level, 1) / 2
+  graphics::abline(h = cutoff)
+  graphics::axis(1, at = prof_ci,  labels = round(prof_ci, 3), tick = FALSE,
+                 mgp = c(3, 0.15, 0))
+  return(invisible())
+}
+
+# --------------------------- print.confint_dgaps --------------------------- #
+
+#' Print method for a confint_dgaps object
+#'
+#' @param x an object of class \code{c("confint_dgaps", "exdex")}, a result of
+#'   a call to \code{\link{confint.dgaps}}.
+#' @details \code{print.confint_dgaps} prints the matrix of confidence
+#'   intervals for \eqn{\theta}.
+#' @return \code{print.confint_dgaps}: the argument \code{x}, invisibly.
+#' @seealso \code{\link{dgaps}} for estimation of the extremal index
+#'   \eqn{\theta} using a semiparametric maxima method.
+#' @rdname dgaps_confint
+#' @export
+print.confint_dgaps <- function(x, ...) {
   if (!inherits(x, "exdex")) {
     stop("use only with \"exdex\" objects")
   }

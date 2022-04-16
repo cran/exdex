@@ -19,22 +19,32 @@ kgaps(data, u, k = 1, inc_cens = TRUE)
 
 \item{u}{A numeric scalar.  Extreme value threshold applied to data.}
 
-\item{k}{A numeric scalar.  Run parameter \eqn{K}, as defined in Suveges and
-Davison (2010).  Threshold inter-exceedances times that are not larger
-than \code{k} units are assigned to the same cluster, resulting in a
-\eqn{K}-gap equal to zero.  Specifically, the \eqn{K}-gap \eqn{S}
+\item{k}{A non-negative numeric scalar. Run parameter \eqn{K}, as defined in
+Suveges and Davison (2010).  Threshold inter-exceedances times that are
+not larger than \code{k} units are assigned to the same cluster, resulting
+in a \eqn{K}-gap equal to zero. Specifically, the \eqn{K}-gap \eqn{S}
 corresponding to an inter-exceedance time of \eqn{T} is given by
-\eqn{S = \max(T - K, 0)}{S = max(T - K, 0)}.}
+\eqn{S = \max(T - K, 0)}{S = max(T - K, 0)}.  In practice, \eqn{k} should
+be no smaller than 1, because when \eqn{k} is less than 1 the estimate
+of \eqn{\theta} is always equal to 1.}
 
 \item{inc_cens}{A logical scalar indicating whether or not to include
-contributions from censored inter-exceedance times, relating to the
-first and last observations.  See Attalides (2015) for details.}
+contributions from right-censored inter-exceedance times, relating to the
+first and last observations.  It is known that these times are greater
+than or equal to the time observed. See Attalides (2015) for details.
+If \code{data} has multiple columns then there will be right-censored
+first and last inter-exceedance times for each column.}
 }
 \value{
 An object (a list) of class \code{c("kgaps", "exdex")} containing
     \item{\code{theta} }{The maximum likelihood estimate (MLE) of
       \eqn{\theta}.}
-    \item{\code{se} }{The estimated standard error of the MLE.}
+    \item{\code{se} }{The estimated standard error of the MLE, calculated
+      using an algebraic expression for the observed information.}
+    \item{\code{se_exp} }{The estimated standard error of the MLE,
+      calculated using an algebraic expression for the expected information.
+      If the estimate of \eqn{\theta} is 0 or 1 then \code{se_exp} is
+      \code{NA}.}
     \item{\code{ss} }{The list of summary statistics returned from
       \code{\link{kgaps_stat}}.}
     \item{\code{k, u, inc_cens} }{The input values of \code{k},
@@ -48,12 +58,15 @@ based on the \eqn{K}-gaps model for threshold inter-exceedances times of
 Suveges and Davison (2010).
 }
 \details{
-The maximum likelihood estimate of the extremal index \eqn{\theta}
-  under the \eqn{K}-gaps model of Suveges and Davison (2010) is calculated.
-  If \code{inc_cens = TRUE} then information from censored inter-exceedance
-  times is included in the likelihood to be maximized, following
-  Attalides (2015).  The form of the log-likelihood is given in the
-  \strong{Details} section of \code{\link{kgaps_stat}}.
+If \code{inc_cens = FALSE} then the maximum likelihood estimate of
+  the extremal index \eqn{\theta} under the \eqn{K}-gaps model of
+  Suveges and Davison (2010) is calculated.
+
+  If \code{inc_cens = TRUE} then information from right-censored
+  first and last inter-exceedance times is also included in the likelihood
+  to be maximized, following Attalides (2015).  The form of the
+  log-likelihood is given in the \strong{Details} section of
+  \code{\link{kgaps_stat}}.
 
   It is possible that the estimate of \eqn{\theta} is equal to 1, and also
   possible that it is equal to 0. \code{\link{kgaps_stat}} explains the
@@ -61,10 +74,15 @@ The maximum likelihood estimate of the extremal index \eqn{\theta}
 }
 \examples{
 ### S&P 500 index
+
 u <- quantile(sp500, probs = 0.60)
 theta <- kgaps(sp500, u)
 theta
 summary(theta)
+coef(theta)
+nobs(theta)
+vcov(theta)
+logLik(theta)
 
 ### Newlyn sea surges
 
@@ -81,7 +99,7 @@ summary(theta)
 }
 \references{
 Suveges, M. and Davison, A. C. (2010) Model
-  misspecification in peaks over threshold analysis, \emph{The Annals of
+  misspecification in peaks over threshold analysis, \emph{Annals of
   Applied Statistics}, \strong{4}(1), 203-221.
   \doi{10.1214/09-AOAS292}
 
@@ -90,8 +108,11 @@ Attalides, N. (2015) Threshold-based extreme value modelling,
   \url{https://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
 }
 \seealso{
-\code{\link{confint.kgaps}} to estimate confidence intervals
+\code{\link{kgaps_confint}} to estimate confidence intervals
   for \eqn{\theta}.
+
+\code{\link{kgaps_methods}} for S3 methods for \code{"kgaps"}
+  objects.
 
 \code{\link{kgaps_imt}} for the information matrix test, which
   may be used to inform the choice of the pair (\code{u, k}).
@@ -105,9 +126,4 @@ Attalides, N. (2015) Threshold-based extreme value modelling,
 \code{\link[revdbayes]{kgaps_post}} in the
   \code{\link[revdbayes]{revdbayes}} package for Bayesian inference
   about \eqn{\theta} using the \eqn{K}-gaps model.
-
-\code{\link{spm}} for estimation of the extremal index
-  \eqn{\theta} using a semiparametric maxima method.
-
-\code{\link{iwls}}: iterated weighted least squares estimator.
 }

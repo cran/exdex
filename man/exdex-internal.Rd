@@ -19,6 +19,14 @@
 \alias{kgaps_conf_int}
 \alias{kgaps_quad_solve}
 \alias{kgaps_imt_old}
+\alias{kgaps_exp_info}
+\alias{dgaps_loglik}
+\alias{g_theta}
+\alias{gd_theta}
+\alias{gdd_theta}
+\alias{gddd_theta}
+\alias{dgaps_exp_info}
+\alias{dgaps_conf_int}
 \alias{iwls_fun}
 \title{Internal exdex functions}
 \usage{
@@ -70,6 +78,22 @@ kgaps_conf_int(theta_mle, ss, conf = 95)
 kgaps_quad_solve(N0, N1, sum_qs)
 
 kgaps_imt_old(data, u, k = 1)
+
+kgaps_exp_info(theta, ss, inc_cens)
+
+dgaps_loglik(theta, N0, N1, sum_qtd, n_dgaps, q_u, D)
+
+g_theta(theta, q_u, D)
+
+gd_theta(theta, q_u, D)
+
+gdd_theta(theta, q_u, D)
+
+gddd_theta(theta, q_u, D)
+
+dgaps_exp_info(theta, ss, inc_cens)
+
+dgaps_conf_int(theta_mle, ss, conf = 95)
 
 iwls_fun(n_wls, N, S_1_sort, exp_qs, ws, nx)
 }

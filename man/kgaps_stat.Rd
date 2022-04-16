@@ -4,12 +4,16 @@
 \alias{kgaps_stat}
 \title{Sufficient statistics for the \eqn{K}-gaps model}
 \usage{
-kgaps_stat(data, u, k = 1, inc_cens = TRUE)
+kgaps_stat(data, u, q_u, k = 1, inc_cens = TRUE)
 }
 \arguments{
 \item{data}{A numeric vector of raw data.}
 
 \item{u}{A numeric scalar.  Extreme value threshold applied to data.}
+
+\item{q_u}{A numeric scalar.  An estimate of the probability with which
+the threshold \code{u} is exceeded.  If \code{q_u} is missing then it is
+calculated using \code{mean(data > u, na.rm = TRUE)}.}
 
 \item{k}{A numeric scalar.  Run parameter \eqn{K}, as defined in Suveges and
 Davison (2010).  Threshold inter-exceedances times that are not larger
@@ -19,19 +23,20 @@ corresponding to an inter-exceedance time of \eqn{T} is given by
 \eqn{S = \max(T - K, 0)}{S = max(T - K, 0)}.}
 
 \item{inc_cens}{A logical scalar indicating whether or not to include
-contributions from censored inter-exceedance times relating to the
-first and last observation.  See Attalides (2015) for details.}
+contributions from right-censored inter-exceedance times relating to the
+first and last observation.  It is known that these times are greater
+than or equal to the time observed. See Attalides (2015) for details.}
 }
 \value{
 A list containing the sufficient statistics, with components
-    \item{\code{N0} }{the number of zero \eqn{K}-gaps}
+    \item{\code{N0} }{the number of zero \eqn{K}-gaps.}
     \item{\code{N1} }{contribution from non-zero \eqn{K}-gaps (see
-      \strong{Details})}
-    \item{\code{sum_qs} }{the sum of the (scaled) \eqn{K}-gaps, i.e.
+      \strong{Details}).}
+    \item{\code{sum_qs} }{the sum of the (scaled) \eqn{K}-gaps, that is,
       \eqn{q (S_0 + \cdots + S_N)}{q (S_0 + ... + S_N)}, where \eqn{q}
       is estimated by the proportion of threshold exceedances.}
-    \item{\code{n_kgaps} }{the number of \eqn{K}-gaps, including 2
-      censored \eqn{K}-gaps if \code{inc_cens = TRUE}.}
+    \item{\code{n_kgaps} }{the number of \eqn{K}-gaps that contribute to the
+      log-likelihood.}
 }
 \description{
 Calculates sufficient statistics for the \eqn{K}-gaps model for the extremal
@@ -41,24 +46,31 @@ index \eqn{\theta}. Called by \code{\link{kgaps}}.
 The sample \eqn{K}-gaps are
   \eqn{S_0, S_1, ..., S_{N-1}, S_N}{S_0, S_1, ..., S_(N-1), S_N},
   where \eqn{S_1, ..., S_{N-1}}{S_1, ..., S_(N-1)} are uncensored and
-  \eqn{S_0} and \eqn{S_N} are censored.  Under the assumption that the
+  \eqn{S_0} and \eqn{S_N} are right-censored.  Under the assumption that the
   \eqn{K}-gaps are independent, the log-likelihood of the \eqn{K}-gaps
   model is given by
   \deqn{l(\theta; S_0, \ldots, S_N) = N_0 \log(1 - \theta) +
     2 N_1 \log \theta - \theta q (S_0 + \cdots + S_N),}{%
     l(\theta; S_0, ..., S_N) = N_0 log(1 - \theta) + 2 N_1 log \theta -
     \theta q (S_0 + ... + S_N),}
-   where \eqn{q} is the threshold exceedance probability,
-   \eqn{N_0} is the number of sample \eqn{K}-gaps that are equal to zero and
-   (apart from an adjustment for the contributions of \eqn{S_0} and
-   \eqn{S_N}) \eqn{N_1} is the number of positive sample \eqn{K}-gaps.
-   Specifically, \eqn{N_1} is equal to the number of
-   \eqn{S_1, ..., S_{N-1}}{S_1, ..., S_(N-1)}
-   that are positive plus \eqn{(I_0 + I_N) / 2}, where \eqn{I_0 = 1} if
-   \eqn{S_0} is greater than zero and \eqn{I_0 = 0} otherwise, and similarly
-   for \eqn{I_N}.
-   The differing treatment of uncensored and censored \eqn{K}-gaps reflects
-   differing contributions to the likelihood.
+   where
+    \itemize{
+      \item{\eqn{q} is the threshold exceedance probability, estimated by
+        the proportion of threshold exceedances,}
+      \item{\eqn{N_0} is the number of uncensored sample \eqn{K}-gaps that
+        are equal to zero,}
+      \item{(apart from an adjustment for the contributions of \eqn{S_0}
+        and \eqn{S_N}) \eqn{N_1} is the number of positive sample
+        \eqn{K}-gaps,}
+      \item{specifically, if \code{inc_cens = TRUE} then \eqn{N_1} is equal
+        to the number of \eqn{S_1, ..., S_{N-1}}{S_1, ..., S_(N-1)}
+        that are positive plus \eqn{(I_0 + I_N) / 2}, where \eqn{I_0 = 1} if
+        \eqn{S_0} is greater than zero and \eqn{I_0 = 0} otherwise, and
+        similarly for \eqn{I_N}.}
+    }
+   The differing treatment of uncensored and right-censored \eqn{K}-gaps
+   reflects differing contributions to the likelihood.  Right-censored
+   \eqn{K}-gaps that are equal to zero add no information to the likelihood.
    For full details see Suveges and Davison (2010) and Attalides (2015).
 
    If \eqn{N_1 = 0} then we are in the degenerate case where there is one
@@ -74,7 +86,7 @@ kgaps_stat(newlyn, u)
 }
 \references{
 Suveges, M. and Davison, A. C. (2010) Model
-  misspecification in peaks over threshold analysis, \emph{The Annals of
+  misspecification in peaks over threshold analysis, \emph{Annals of
   Applied Statistics}, \strong{4}(1), 203-221.
   \doi{10.1214/09-AOAS292}
 

@@ -182,6 +182,9 @@ The extremal index \eqn{\theta} is estimated using the
 theta <- spm(newlyn, 20)
 theta
 summary(theta)
+coef(theta)
+nobs(theta)
+vcov(theta)
 
 ### S&P 500 index
 theta <- spm(sp500, 100)
@@ -198,11 +201,8 @@ Berghaus, B., Bucher, A. (2018) Weak convergence of a pseudo
   \strong{46}(5), 2307-2335. \doi{10.1214/17-AOS1621}
 }
 \seealso{
-\code{\link{confint.spm}} to estimate confidence intervals
-  for \eqn{theta}.
+\code{\link{spm_confint}} to estimate confidence intervals
+  for \eqn{\theta}.
 
-\code{\link{kgaps}} for maximum likelihood estimation of the
-  extremal index \eqn{\theta} using the \eqn{K}-gaps model.
-
-\code{\link{iwls}}: iterated weighted least squares estimator.
+\code{\link{spm_methods}} for S3 methods for \code{"spm"} objects.
 }

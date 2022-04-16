@@ -61,6 +61,11 @@ theta
 summary(theta)
 
 ## -----------------------------------------------------------------------------
+theta <- dgaps(cheeseboro, 45, D = 3)
+theta
+summary(theta)
+
+## -----------------------------------------------------------------------------
 u <- quantile(newlyn, probs = 0.90)
 theta <- iwls(newlyn, u)
 theta

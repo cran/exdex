@@ -22,10 +22,10 @@
 #' @param inc_cens A logical scalar indicating whether or not to include
 #'   contributions from censored inter-exceedance times, relating to the
 #'   first and last observations.  See Attalides (2015) for details.
-#' @details The IMT is performed a over grid of all
+#' @details The \eqn{K}-gaps IMT is performed a over grid of all
 #'   combinations of threshold and \eqn{K} in the vectors \code{u}
 #'   and \code{k}.  If the estimate of \eqn{\theta} is 0 then the
-#'   IMT statistic, and its associated \eqn{p}-value will be \code{NA}.
+#'   IMT statistic, and its associated \eqn{p}-value is \code{NA}.
 #'
 #'   For details of the IMT see Suveges and Davison
 #'   (2010).  There are some typing errors on pages 18-19 that have been
@@ -48,7 +48,7 @@
 #'     containing the corresponding estimates of \eqn{\theta}.}
 #'   \item{u,k }{The input \code{u} and \code{k}.}
 #' @references Suveges, M. and Davison, A. C. (2010) Model
-#'   misspecification in peaks over threshold analysis, \emph{The Annals of
+#'   misspecification in peaks over threshold analysis, \emph{Annals of
 #'   Applied Statistics}, \strong{4}(1), 203-221.
 #'   \doi{10.1214/09-AOAS292}
 #' @references Attalides, N. (2015) Threshold-based extreme value modelling,
@@ -56,6 +56,8 @@
 #'   \url{https://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
 #' @seealso \code{\link{kgaps}} for maximum likelihood estimation of the
 #'   extremal index \eqn{\theta} using the \eqn{K}-gaps model.
+#' @seealso \code{\link{choose_uk}} for graphical diagnostic to aid the choice
+#'   of the threshold \eqn{u} and the run parameter \eqn{K}.
 #' @examples
 #' ### Newlyn sea surges
 #'
@@ -65,7 +67,7 @@
 #' ### S&P 500 index
 #'
 #' u <- quantile(sp500, probs = seq(0.1, 0.9, by = 0.1))
-#' imt <- choose_uk(sp500, u = u, k = 1:5)
+#' imt <- kgaps_imt(sp500, u = u, k = 1:5)
 #'
 #' ### Cheeseboro wind gusts (a matrix containing some NAs)
 #'
@@ -74,6 +76,9 @@
 #' imt <- kgaps_imt(cheeseboro, u = u, k = 1:5)
 #' @export
 kgaps_imt <- function(data, u, k = 1, inc_cens = TRUE) {
+  if (any(k < 0)) {
+    stop("k must be non-negative")
+  }
   # Remove any thresholds that are greater than all the observations
   u_ok <- vapply(u, function(u) any(data > u), TRUE)
   u <- u[u_ok]
@@ -93,9 +98,9 @@ kgaps_imt <- function(data, u, k = 1, inc_cens = TRUE) {
     # Estimate theta
     theta <- kgaps(data, u, k, inc_cens = inc_cens)$theta
     # Contributions to the test statistic from each observation, returning a list
-    # with a list of (ldj, Ij, Jj, dj, Ddj, n_kgaps)for each column in data
-    imt_stats_list <- apply(data, 2, imt_stat, theta = theta, u = u, k = k,
-                            inc_cens = inc_cens)
+    # with a list of (ldj, Ij, Jj, dj, Ddj, n_kgaps) for each column in data
+    imt_stats_list <- apply(data, 2, kgaps_imt_stat, theta = theta, u = u,
+                            k = k, inc_cens = inc_cens)
     # Concatenate the results from different columns
     sc <- Reduce(f = function(...) Map(c, ...), imt_stats_list)
     # Calculate the components of the test statistic
@@ -126,7 +131,7 @@ kgaps_imt <- function(data, u, k = 1, inc_cens = TRUE) {
   return(res)
 }
 
-# ================================ imt_stat ================================= #
+# ============================= kgaps_imt_stat ============================== #
 
 #' Statistics for the information matrix test
 #'
@@ -161,22 +166,23 @@ kgaps_imt <- function(data, u, k = 1, inc_cens = TRUE) {
 #'   \item{\code{dj} }{\code{Jj} - \code{Ij}}
 #'   \item{\code{Ddj} }{the derivative of \code{Jj} - \code{Ij} with respect
 #'     to \eqn{\theta}}
-#'   \item{\code{n_kgaps} }{the number of \eqn{K}-gaps.}
+#'   \item{\code{n_kgaps} }{the number of \eqn{K}-gaps that contribute to the
+#'     log-likelihood.}
 #' @references Suveges, M. and Davison, A. C. (2010) Model
-#'   misspecification in peaks over threshold analysis, \emph{The Annals of
+#'   misspecification in peaks over threshold analysis, \emph{Annals of
 #'   Applied Statistics}, \strong{4}(1), 203-221.
 #'   \doi{10.1214/09-AOAS292}
 #' @references Attalides, N. (2015) Threshold-based extreme value modelling,
 #'   PhD thesis, University College London.
 #'   \url{https://discovery.ucl.ac.uk/1471121/1/Nicolas_Attalides_Thesis.pdf}
 #' @export
-imt_stat <- function(data, theta, u, k = 1, inc_cens = TRUE) {
+kgaps_imt_stat <- function(data, theta, u, k = 1, inc_cens = TRUE) {
   data <- stats::na.omit(data)
   if (!is.numeric(u) || length(u) != 1) {
     stop("u must be a numeric scalar")
   }
-  if (!is.numeric(k) || length(k) != 1) {
-    stop("k must be a numeric scalar")
+  if (!is.numeric(k) || k < 0 || length(k) != 1) {
+    stop("k must be a non-negative scalar")
   }
   #
   # Calculate the statistics in log-likelihood, as in kgaps_stat()
@@ -197,7 +203,7 @@ imt_stat <- function(data, theta, u, k = 1, inc_cens = TRUE) {
   N1 <- sum(S_k > 0)
   N0 <- N_u - 1 - N1
   sum_qs <- sum(q_u * S_k)
-  # Store the number of K-gaps, for use by nobs.kgaps()
+  # Store the number of K-gaps
   n_kgaps <- N0 + N1
   # Values of c^(K) = q_u * S^(K)
   qS <- q_u * S_k
@@ -208,12 +214,15 @@ imt_stat <- function(data, theta, u, k = 1, inc_cens = TRUE) {
   mDdj2 <- rep_len(4, n_kgaps)
   # Include censored inter-exceedance times?
   if (inc_cens) {
-    n_kgaps <- n_kgaps + 2
     # censored inter-exceedance times and K-gaps
     T_u_cens <- c(exc_u[1] - 1, nx - exc_u[N_u])
     S_k_cens <- pmax(T_u_cens - k, 0)
     # N0, N1, sum of scaled K-gaps
+    # S_k_cens = 0 adds no information, because P(S >= 0) = 1
     N1_cens <- sum(S_k_cens > 0)
+    n_kgaps <- n_kgaps + N1_cens
+    # Remove the censored K-gaps that are equal to zero
+    S_k_cens <- S_k_cens[S_k_cens > 0]
     sum_s_cens <- sum(q_u * S_k_cens)
     # Add contributions.
     # Note: we divide N1_cens by two because a censored non-zero K-gap S_c
@@ -227,23 +236,26 @@ imt_stat <- function(data, theta, u, k = 1, inc_cens = TRUE) {
     # Supplement the c^(K) terms
     qS <- c(qS, qS_cens)
     # Supplement the multipliers
-    mldj <- c(mldj, rep_len(1, 2))
-    mIj <- c(mIj, rep_len(1, 2))
-    mDdj1 <- c(mDdj1, rep_len(2, 2))
-    mDdj2 <- c(mDdj2, rep_len(0, 2))
+    mldj <- c(mldj, rep_len(1, N1_cens))
+    mIj <- c(mIj, rep_len(1, N1_cens))
+    mDdj1 <- c(mDdj1, rep_len(2, N1_cens))
+    mDdj2 <- c(mDdj2, rep_len(0, N1_cens))
   }
   # Calculate the statistics in the IMT
   # An estimate theta = 1 occurs if all the K-gaps are positive (qS > 0):
-  # in this case we never attempt to divide by 0.
+  #  in this case we never attempt to divide by 0.
   # An estimate theta = 0 occurs only if all the K-gaps are zero (qS = 0):
-  # in this case we divide by zero in calculating Ddj.
+  #  in this case we divide by zero in calculating Ddj (mDdj1 * qS / theta ^ 2)
   # If this happens then we convert the NaN to NA.
+  # Note: all the right-censored K-gaps have qS > 0, so the qS == 0 terms
+  #  have no contribution from the right-censored observations
   ldj <- ifelse(qS == 0, -1 / (1 - theta), mldj / theta) - qS
   Ij  <- ifelse(qS == 0, 1 / (1 - theta) ^ 2, mIj / theta ^ 2)
   Jj <- ldj ^ 2
   dj <- Jj - Ij
   Ddj <- mDdj1 * qS / theta ^ 2 - ifelse(qS == 0, 0, mDdj2 / theta ^ 3)
   Ddj[is.nan(Ddj)] <- NA
-  return(list(ldj = ldj, Ij = Ij, Jj = Jj, dj = dj, Ddj = Ddj,
-              n_kgaps = n_kgaps))
+  res <- list(ldj = ldj, Ij = Ij, Jj = Jj, dj = dj, Ddj = Ddj,
+              n_kgaps = n_kgaps)
+  return(res)
 }
