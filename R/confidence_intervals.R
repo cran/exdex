@@ -560,7 +560,9 @@ print.confint_spm <- function(x, ...) {
 #'   \% (by default 2.5\% and 97.5\%).
 #'   The row names indicate the type of interval:
 #'   \code{norm} for intervals based on large sample normality and \code{lik}
-#'   for likelihood-based intervals.}
+#'   for likelihood-based intervals.
+#'   If \code{object$k = 0} then both confidence limits are returned as being
+#'   equal to the point estimate of \eqn{\theta}.}
 #'   \item{call}{The call to \code{spm}.}
 #'   \item{object}{The input object \code{object}.}
 #'   \item{level}{The input \code{level}.}
@@ -613,9 +615,14 @@ confint.kgaps <- function (object, parm = "theta", level = 0.95,
     lower <- upper <- NULL
   }
   if (interval_type == "lik" || interval_type == "both") {
-    # Likelihood-based confidence intervals.
-    temp <- kgaps_conf_int(theta_mle = theta, ss = object$ss,
-                           conf = 100 * level)
+    # Likelihood-based confidence intervals
+    # If K = 0 then return equal interval limits
+    if (object$k == 0) {
+      temp <- c(theta, theta)
+    } else {
+      temp <- kgaps_conf_int(theta_mle = theta, ss = object$ss,
+                             conf = 100 * level)
+    }
     lower <- c(lower, temp[1])
     upper <- c(upper, temp[2])
   }
@@ -648,12 +655,17 @@ confint.kgaps <- function (object, parm = "theta", level = 0.95,
 #'
 #' @param x an object of class \code{c("confint_kgaps", "exdex")}, a result of
 #'   a call to \code{\link{confint.kgaps}}.
-#' @return \code{plot.confint_kgaps}: nothing is returned.
+#' @return \code{plot.confint_kgaps}: nothing is returned.  If
+#'   \code{x$object$k = 0} then no plot is produced.
 #' @rdname kgaps_confint
 #' @export
 plot.confint_kgaps <- function(x, ...) {
   if (!inherits(x, "exdex")) {
     stop("use only with \"exdex\" objects")
+  }
+  # If K = 0 then do not produce a plot
+  if (x$object$k == 0) {
+    stop("No plot is produced if K = 0 because confidence limits are equal")
   }
   if (!("lik" %in% rownames(x$cis))) {
     stop("Plot method not available when interval_type = ''norm''")

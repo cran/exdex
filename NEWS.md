@@ -1,3 +1,17 @@
+# exdex 1.2.2
+
+## Bug fixes and minor improvements
+
+* If the argument `k = 0` is supplied to `kgaps()` then an estimate of 1 is returned for the extremal index for any input data.  For this very special case the estimated standard error associated with this estimate is set to zero and confidence intervals have a width of zero.  
+
+* Corrected a typing error in the description of `uprob` in the documentation for `plot.choose_uk()` and `plot.choose_ud()`.
+
+* The unnecessary C++11 specification has been dropped to avoid a CRAN Package Check NOTE. 
+
+* README.md: Used app.codecov.io as base for codecov link.
+
+* Create the help file for the package correctly, with alias exdex-package.
+
 # exdex 1.2.1
 
 ## New features
@@ -31,7 +45,7 @@
     - contains missing values, that is, `NA`s. 
 * A new dataset `cheeseboro` is included, which is a matrix containing some missing values.
 * In addition to `kgaps()`, the functions `kgaps_imt()` and `choose_uk()` now have an extra argument `inc_cens`, which allows contributions from censored K-gaps to be included in the log-likelihood for the extremal index.
-* The default value of `inc_cens` in `kgaps()` (and in `kgaps_imt()` and `choose_uk()`) and is now `inc_cens = TRUE`.
+* The default value of `inc_cens` in `kgaps()` (and in `kgaps_imt()` and `choose_uk()`) is now `inc_cens = TRUE`.
 
 ## Bug fixes and minor improvements
 

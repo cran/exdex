@@ -73,12 +73,15 @@ A list of class c("confint_kgaps", "exdex") containing the
   \% (by default 2.5\% and 97.5\%).
   The row names indicate the type of interval:
   \code{norm} for intervals based on large sample normality and \code{lik}
-  for likelihood-based intervals.}
+  for likelihood-based intervals.
+  If \code{object$k = 0} then both confidence limits are returned as being
+  equal to the point estimate of \eqn{\theta}.}
   \item{call}{The call to \code{spm}.}
   \item{object}{The input object \code{object}.}
   \item{level}{The input \code{level}.}
 
-\code{plot.confint_kgaps}: nothing is returned.
+\code{plot.confint_kgaps}: nothing is returned.  If
+  \code{x$object$k = 0} then no plot is produced.
 
 \code{print.confint_kgaps}: the argument \code{x}, invisibly.
 }

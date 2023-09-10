@@ -5,8 +5,9 @@
 
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/paulnorthrop/exdex?branch=master&svg=true)](https://ci.appveyor.com/project/paulnorthrop/exdex)
+[![R-CMD-check](https://github.com/paulnorthrop/exdex/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/paulnorthrop/exdex/actions/workflows/R-CMD-check.yaml)
 [![Coverage
-Status](https://codecov.io/github/paulnorthrop/exdex/coverage.svg?branch=master)](https://codecov.io/github/paulnorthrop/exdex?branch=master)
+Status](https://codecov.io/github/paulnorthrop/exdex/coverage.svg?branch=master)](https://app.codecov.io/github/paulnorthrop/exdex?branch=master)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/exdex)](https://cran.r-project.org/package=exdex)
 [![Downloads
 (monthly)](https://cranlogs.r-pkg.org/badges/exdex?color=brightgreen)](https://cran.r-project.org/package=exdex)
@@ -17,9 +18,10 @@ Status](https://codecov.io/github/paulnorthrop/exdex/coverage.svg?branch=master)
 
 ### What does exdex do?
 
-The extremal index *θ* is a measure of the degree of local dependence in
-the extremes of a stationary process. The `exdex` package performs
-frequentist inference about *θ* using two types of methodology.
+The extremal index $\theta$ is a measure of the degree of local
+dependence in the extremes of a stationary process. The `exdex` package
+performs frequentist inference about $\theta$ using two types of
+methodology.
 
 One type ([Northrop, 2015](https://doi.org/10.1007/s10687-015-0221-5))
 is based on a model that relates the distribution of block maxima to the
@@ -34,16 +36,19 @@ diagnostic is provided.
 
 The other type of methodology uses a model for the distribution of
 threshold inter-exceedance times ([Ferro and Segers,
-2003](https://doi.org/10.1111/1467-9868.00401)). Two versions of this
+2003](https://doi.org/10.1111/1467-9868.00401)). Three versions of this
 type of approach are provided: the iterated weight least squares
-approach of [Süveges (2007)](https://doi.org/10.1007/s10687-007-0034-2)
-and the *K*-gaps model of [Süveges and Davison
-(2010)](https://doi.org/10.1214/09-AOAS292). For the *K*-gaps model the
-`exdex` package allows missing values in the data, can accommodate
-independent subsets of data, such as monthly or seasonal time series
-from different years, and can incorporate information from censored
-interexceedance times. A graphical diagnostic for the threshold level
-and the runs parameter *K* is provided.
+approach of [Süveges (2007)](https://doi.org/10.1007/s10687-007-0034-2),
+the $K$-gaps model of [Süveges and Davison
+(2010)](https://doi.org/10.1214/09-AOAS292) and a similar approach of
+[Holesovsky and Fusek
+(2020)](https://doi.org/10.1007/s10687-020-00374-3) that we refer to as
+D-gaps. For the $K$-gaps and $D$-gaps models the `exdex` package allows
+missing values in the data, can accommodate independent subsets of data,
+such as monthly or seasonal time series from different years, and can
+incorporate information from censored inter-exceedance times. Graphical
+diagnostics for the threshold level and the respective tuning parameters
+$K$ and $D$ are provided.
 
 ### A simple example
 
@@ -79,9 +84,9 @@ summary(theta)
 #> BB2018b, disjoint   0.2542    0.02101  0.053570
 ```
 
-Now we estimate *θ* using the *K*-gaps model. The threshold *u* and runs
-parameter *K* were chosen using the graphical diagnostic provided by
-`choose_uk()`.
+Now we estimate $\theta$ using the $K$-gaps model. The threshold $u$ and
+runs parameter $K$ were chosen using the graphical diagnostic provided
+by `choose_uk()`.
 
 ``` r
 u <- quantile(newlyn, probs = 0.60)
@@ -92,7 +97,8 @@ theta
 #> kgaps(data = newlyn, u = u, k = 2)
 #> 
 #> Estimate of the extremal index theta:
-#> [1]  0.1758
+#>  theta  
+#> 0.1758
 summary(theta)
 #> 
 #> Call:
