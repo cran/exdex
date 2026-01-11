@@ -1,6 +1,6 @@
-7aed046b926d4309403f6e8cc48846a6 *DESCRIPTION
+18457c5236e127a3d2e6d8d964daf94d *DESCRIPTION
 d4d2bb1f032c8d1e7f3b451fc1fc786a *NAMESPACE
-adf446e5feaa8d14562e08a87360beea *NEWS.md
+1487869e3335b2f6e01d596b1294dfe7 *NEWS.md
 634b22d9787a3e1810bbf22e6665c916 *R/RcppExports.R
 47ec36ed9081d2cedd2bb615bd071c98 *R/block_maxima.R
 30094c3e5539679840b79ce8e57c9014 *R/choose_b.R
@@ -21,9 +21,9 @@ e8679bbe886ec1d585cd21da9934f92d *R/kgaps_methods.R
 187517fe1290929eba9207c67b33c478 *R/spm_methods.R
 8be20b344913a7e4de2c998c59053ca5 *R/spm_rcpp.R
 726cab9336b4f850f5341dea94c1baf2 *R/zzz.R
-ea43b5f6bf368d017b2f97770c870cf0 *README.md
-cdbdb705c017565f8d24cdc91a0e6ec8 *build/partial.rdb
-0395fa55223af34e3211b9b7a6a5b242 *build/vignette.rds
+ae38fc616c664546eaf0a6e19320c9fe *README.md
+9d40159f50a5fc9949cbfe95a2884126 *build/partial.rdb
+56696ad270bac7061af2fa2ca6c7ae0a *build/vignette.rds
 ad20db2c108c08d27915c1f812408bf9 *data/cheeseboro.rda
 9fbeb87e144a22d28d0f67f0115f6d6c *data/newlyn.rda
 05ab8690efaca273da9028fdb90ddecb *data/sp500.rda
@@ -32,7 +32,7 @@ f4fb61a1aa22e5f90cb9d00d6ae9d8ab *data/uccle720.rda
 d1287da0d6df7ea6df04157e49fd5682 *data/uccle720m.rda
 48c0fb55c37013c75454c80b614f6955 *inst/doc/exdex-vignette.R
 b85619a94ea75d3466f7767cd93f8757 *inst/doc/exdex-vignette.Rmd
-014fabc27dc8e73d0e15e06b5e326805 *inst/doc/exdex-vignette.html
+b96aaf4f61244c6df66a731f5108b5f7 *inst/doc/exdex-vignette.html
 cd9800d6ea33f744ce19f8cee5a6282c *inst/include/exdex.h
 095198ba1ebb61cf8c22acd625354fb6 *inst/include/exdex_RcppExports.h
 54112ac9d58f1d139d04fe5b114a9e2b *man/all_max_rcpp.Rd
@@ -70,7 +70,7 @@ c02750d1e3304579b281cbc16e9cf262 *man/uccle720.Rd
 0b80f841a8ca8a8fe666cedd12313ed3 *man/uccle720m.Rd
 2a6f9e9e044a78154d3cfda5936d6f48 *src/Makevars
 2a6f9e9e044a78154d3cfda5936d6f48 *src/Makevars.win
-2decc36098568e6b6f830748cd13029d *src/RcppExports.cpp
+7f2bb43cce88e28d9a45f4e0032457c6 *src/RcppExports.cpp
 74be7396a97586d14bfc104491b9153e *src/maxima.cpp
 e3610a9d21d0432705bff282e26b0e79 *tests/testthat.R
 54485c4fc4490f9e57fcf2f985605469 *tests/testthat/test-choose_b.R

@@ -3,8 +3,6 @@
 
 # exdex
 
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/paulnorthrop/exdex?branch=master&svg=true)](https://ci.appveyor.com/project/paulnorthrop/exdex)
 [![R-CMD-check](https://github.com/paulnorthrop/exdex/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/paulnorthrop/exdex/actions/workflows/R-CMD-check.yaml)
 [![Coverage
 Status](https://codecov.io/github/paulnorthrop/exdex/coverage.svg?branch=master)](https://app.codecov.io/github/paulnorthrop/exdex?branch=master)
@@ -13,6 +11,11 @@ Status](https://codecov.io/github/paulnorthrop/exdex/coverage.svg?branch=master)
 (monthly)](https://cranlogs.r-pkg.org/badges/exdex?color=brightgreen)](https://cran.r-project.org/package=exdex)
 [![Downloads
 (total)](https://cranlogs.r-pkg.org/badges/grand-total/exdex?color=brightgreen)](https://cran.r-project.org/package=exdex)
+
+See also the translations of the main estimation functions of `exdex`
+into [Python: Py-exdex](https://github.com/LJ-Jenkins/Py-exdex) and
+[Matlab/Octave: M-exdex](https://github.com/LJ-Jenkins/M-exdex),
+courtesy of Luke Jenkins.
 
 ## Estimation of the Extremal Index
 
